@@ -10,18 +10,28 @@ describe('app', () => {
 
   const request = chai.request(app);
 
-  it('gets a cat', done => {
-    request.get('/cat').end((err, res) => {
-      assert.equal(res.text, `{ name: 'super cat', type: 'top secret' }`);
-      done();
+  it('returns supercat', () => {
+    return request.get('/cat')
+      .then(res => {
+        assert.deepEqual(res.body, { name: 'super cat', type: 'top secret' });
+      });
+  });
+
+  it('gets cat.html', () => {
+    request.get('/cat.html')
+    .end(res => {
+      assert.match(res.text, '<h1>Super Cat FTW!<h1>');
     });
   });
 
-  it('gets index', done => {
-    request.get('/index').end((err, res) => {
-      assert.match(res.text, /Super Cat FTW!/);
-      done();
-    });
+  it('returns 404 for no GET', () => {
+    return request.post('/')
+      .then(() => {
+        throw new Error('should not succeed, 404 expected')
+      },
+      res => {
+        assert.equal(res.status, 404);
+      });
   });
 
 });

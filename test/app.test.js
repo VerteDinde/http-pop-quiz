@@ -18,16 +18,16 @@ describe('app', () => {
   });
 
   it('gets cat.html', () => {
-    request.get('/cat.html')
-    .end(res => {
-      assert.match(res.text, '<h1>Super Cat FTW!<h1>');
-    });
+    return request.get('/cat.html')
+      .then(res => {
+        assert.equal(res.text, '<h1>Super Cat FTW!</h1>');
+      });
   });
 
   it('returns 404 for no GET', () => {
     return request.post('/')
       .then(() => {
-        throw new Error('should not succeed, 404 expected')
+        throw new Error('should not succeed, 404 expected');
       },
       res => {
         assert.equal(res.status, 404);
